@@ -1,0 +1,18 @@
+[package]
+name = "mazemaze"
+version = "0.1.0"
+authors = ["AcrylicShrimp <led789zxpp@naver.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.5"
+
+[dependencies.gl]
+git = "https://github.com/bjz/gl-rs"
+
+[dependencies.sdl2]
+version = "0.34"
+default-features = false
+features = ["image", "mixer", "ttf", "unsafe_textures"]
