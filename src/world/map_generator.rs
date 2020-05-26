@@ -1,12 +1,17 @@
 extern crate rand;
 
 use super::map::Map;
-use crate::render::map_generator::rand::RngCore;
+use rand::RngCore;
 
 pub fn generate_map(width: u32, height: u32) -> Map {
-	let mut maze = vec![1; (width * height) as usize];
-
 	let mut rng = rand::prelude::thread_rng();
+
+	let mut maze: Vec<u8> = vec![0; (width * height) as usize];
+
+	for block in maze.iter_mut() {
+		*block = (rng.next_u32() % 3 + 1) as u8;
+	}
+
 	let mut stack: Vec<(i32, i32)> = Vec::new();
 	let mut cell_vec: Vec<u8> = Vec::with_capacity(4);
 
@@ -30,7 +35,7 @@ pub fn generate_map(width: u32, height: u32) -> Map {
 			return false;
 		}
 
-		maze[(x as u32 + y as u32 * width) as usize] == 1
+		maze[(x as u32 + y as u32 * width) as usize] != 0
 	};
 	let is_not_juction_horizontal = |maze: &Vec<u8>, x: i32, y: i32| -> bool {
 		!is_way(maze, x - 1, y) && !is_way(maze, x + 1, y)
@@ -81,7 +86,8 @@ pub fn generate_map(width: u32, height: u32) -> Map {
 		cell_vec.clear();
 		stack.push(next_cell);
 
-		maze[(next_cell.0 as u32 + next_cell.1 as u32 * width) as usize] = 0
+		maze[(cell.0 as u32 + cell.1 as u32 * width) as usize] = 0;
+		maze[(next_cell.0 as u32 + next_cell.1 as u32 * width) as usize] = 0;
 	}
 
 	Map::from_data(width, height, maze)
