@@ -1,5 +1,3 @@
-extern crate sdl2;
-
 pub struct Map {
     data: Vec<u8>,
     width: u32,
