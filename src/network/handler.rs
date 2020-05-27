@@ -113,6 +113,8 @@ impl Handler {
 											.read_i32::<byteorder::LittleEndian>()
 											.unwrap();
 
+									world.add_player(id, glyph, color, x, y);
+
 									players.push((id, glyph, color, x, y));
 								}
 
@@ -177,6 +179,8 @@ impl Handler {
 								.read_i32::<byteorder::LittleEndian>()
 								.unwrap();
 
+							world.add_player(id, glyph, color, x, y);
+
 							println!("new player income: {:?}", (id, glyph, color, x, y));
 
 							socket.receive(2);
@@ -199,6 +203,8 @@ impl Handler {
 							let id = std::io::Cursor::new(&received)
 								.read_u64::<byteorder::LittleEndian>()
 								.unwrap();
+
+							world.remove_player(id);
 
 							println!("player exit: {:?}", id);
 
