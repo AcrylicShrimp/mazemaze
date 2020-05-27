@@ -1,5 +1,9 @@
 extern crate sdl2;
 
+use super::super::controller::controller::Controller;
+use super::super::controller::player_controller::PlayerController;
+use super::super::input::input::Input;
+use super::super::network::socket::Socket;
 use super::super::object::object::Object;
 use super::super::object::player::Player;
 use super::map::Map;
@@ -11,6 +15,7 @@ pub struct World<'render, 'ttf_module, 'rwops> {
     map: Option<Map>,
     map_renderer: MapRenderer,
     players: Vec<Player>,
+    player_controller: PlayerController,
 }
 
 impl<'render, 'ttf_module, 'rwops> World<'render, 'ttf_module, 'rwops> {
@@ -49,11 +54,43 @@ impl<'render, 'ttf_module, 'rwops> World<'render, 'ttf_module, 'rwops> {
             map: None,
             map_renderer,
             players: Vec::new(),
+            player_controller: PlayerController::new(0.25f32),
         }
     }
 
     pub fn map(&self) -> &Option<Map> {
         &self.map
+    }
+
+    pub fn players(&self) -> &Vec<Player> {
+        &self.players
+    }
+
+    pub fn players_mut(&mut self) -> &mut Vec<Player> {
+        &mut self.players
+    }
+
+    pub fn player_controller(&self) -> &PlayerController {
+        &self.player_controller
+    }
+
+    pub fn player_controller_mut(&mut self) -> &mut PlayerController {
+        &mut self.player_controller
+    }
+
+    pub fn update(&mut self, now: std::time::Instant, input: &Input, socket: &mut Socket) {
+        match &self.map {
+            Some(map) => {
+                self.player_controller.update(
+                    now,
+                    input,
+                    map,
+                    self.players.first_mut().unwrap().object_mut(),
+                    socket,
+                );
+            }
+            None => {}
+        }
     }
 
     pub fn render(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
