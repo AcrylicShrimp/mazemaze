@@ -11,6 +11,7 @@ pub enum Context {
 	},
 	PlayerReceive,
 	PlayerIdReceive,
+	MoveReceive,
 }
 
 pub struct Handler {
@@ -118,6 +119,10 @@ impl Handler {
 									players.push((id, glyph, color, x, y));
 								}
 
+								world
+									.player_controller_mut()
+									.set_player_id(players.first().unwrap().0);
+
 								println!("players: {:?}", players);
 
 								world.init_map(super::super::world::map::Map::from_data(
@@ -214,11 +219,56 @@ impl Handler {
 						}
 						None => {}
 					},
-					_ => {}
+					_ => unreachable!(),
 				},
 				None => {
 					socket.receive(8);
 					self.context = Some(Context::PlayerIdReceive);
+				}
+			},
+			4 => match self.context.as_mut() {
+				Some(context) => match context {
+					Context::MoveReceive => match socket.retrieve() {
+						Some(received) => {
+							let id = std::io::Cursor::new(&received)
+								.read_u64::<byteorder::LittleEndian>()
+								.unwrap();
+
+							for player in world.players_mut().iter_mut() {
+								if player.id() != id {
+									continue;
+								}
+
+								match received[8] {
+									0 => {
+										player.object_mut().y -= 1;
+									}
+									1 => {
+										player.object_mut().y += 1;
+									}
+									2 => {
+										player.object_mut().x -= 1;
+									}
+									3 => {
+										player.object_mut().x += 1;
+									}
+									_ => {}
+								}
+							}
+
+							println!("player move: {:?} - {}", id, received[8]);
+
+							socket.receive(2);
+							self.status = None;
+							self.context = None;
+						}
+						None => {}
+					},
+					_ => unreachable!(),
+				},
+				None => {
+					socket.receive(9);
+					self.context = Some(Context::MoveReceive);
 				}
 			},
 			_ => {
