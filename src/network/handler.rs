@@ -106,11 +106,11 @@ impl Handler {
 									);
 									let x =
 										std::io::Cursor::new(&received[offset + 16..offset + 20])
-											.read_u32::<byteorder::LittleEndian>()
+											.read_i32::<byteorder::LittleEndian>()
 											.unwrap();
 									let y =
 										std::io::Cursor::new(&received[offset + 20..offset + 24])
-											.read_u32::<byteorder::LittleEndian>()
+											.read_i32::<byteorder::LittleEndian>()
 											.unwrap();
 
 									players.push((id, glyph, color, x, y));
@@ -171,10 +171,10 @@ impl Handler {
 									.unwrap();
 							let color = (received[13], received[14], received[15]);
 							let x = std::io::Cursor::new(&received[16..20])
-								.read_u32::<byteorder::LittleEndian>()
+								.read_i32::<byteorder::LittleEndian>()
 								.unwrap();
 							let y = std::io::Cursor::new(&received[20..24])
-								.read_u32::<byteorder::LittleEndian>()
+								.read_i32::<byteorder::LittleEndian>()
 								.unwrap();
 
 							println!("new player income: {:?}", (id, glyph, color, x, y));
