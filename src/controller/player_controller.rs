@@ -27,41 +27,43 @@ impl Controller for PlayerController {
         world: &World,
         object: &mut Object,
     ) {
-        if self.last_move.is_none() {
-            self.last_move = Some(now);
-            return;
-        }
-
-        if (now - self.last_move.unwrap()).as_secs_f32() < self.delay {
-            return;
-        }
-
-        if input.up() != input.down() {
-            if input.up() {
-                if world.map().get_block(object.x as u32, object.y as u32 - 1) == 0 {
-                    object.y -= 1;
+        match world.map() {
+            Some(map) => {
+                if self.last_move.is_none() {
                     self.last_move = Some(now);
+                    return;
                 }
-            } else {
-                if world.map().get_block(object.x as u32, object.y as u32 + 1) == 0 {
-                    object.y += 1;
-                    self.last_move = Some(now);
+                if (now - self.last_move.unwrap()).as_secs_f32() < self.delay {
+                    return;
+                }
+                if input.up() != input.down() {
+                    if input.up() {
+                        if map.get_block(object.x as u32, object.y as u32 - 1) == 0 {
+                            object.y -= 1;
+                            self.last_move = Some(now);
+                        }
+                    } else {
+                        if map.get_block(object.x as u32, object.y as u32 + 1) == 0 {
+                            object.y += 1;
+                            self.last_move = Some(now);
+                        }
+                    }
+                }
+                if input.left() != input.right() {
+                    if input.left() {
+                        if map.get_block(object.x as u32 - 1, object.y as u32) == 0 {
+                            object.x -= 1;
+                            self.last_move = Some(now);
+                        }
+                    } else {
+                        if map.get_block(object.x as u32 + 1, object.y as u32) == 0 {
+                            object.x += 1;
+                            self.last_move = Some(now);
+                        }
+                    }
                 }
             }
-        }
-
-        if input.left() != input.right() {
-            if input.left() {
-                if world.map().get_block(object.x as u32 - 1, object.y as u32) == 0 {
-                    object.x -= 1;
-                    self.last_move = Some(now);
-                }
-            } else {
-                if world.map().get_block(object.x as u32 + 1, object.y as u32) == 0 {
-                    object.x += 1;
-                    self.last_move = Some(now);
-                }
-            }
+            None => {}
         }
     }
 }
