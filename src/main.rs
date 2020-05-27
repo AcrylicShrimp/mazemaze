@@ -8,7 +8,6 @@ mod object;
 mod world;
 
 use byteorder::WriteBytesExt;
-use controller::controller::Controller;
 
 fn find_sdl_gl_driver() -> Option<u32> {
     for (index, item) in sdl2::render::drivers().enumerate() {
@@ -57,15 +56,6 @@ fn main() {
     font.set_hinting(sdl2::ttf::Hinting::Light);
 
     let mut world = world::world::World::new(&font, &texture_creator);
-    // let mut character = object::object::Object::new(
-    //     1,
-    //     1,
-    //     '@',
-    //     sdl2::pixels::Color::CYAN,
-    //     &font,
-    //     &texture_creator,
-    // );
-    // let mut player_controller = controller::player_controller::PlayerController::new(0.25f32);
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
@@ -93,13 +83,12 @@ fn main() {
             }
         }
 
-        // player_controller.update(now, &input, &world, &mut character);
+        world.update(now, &input, &mut socket);
 
         canvas.clear();
 
         // TODO: Render something here.
         world.render(&mut canvas);
-        // character.render(&mut canvas);
 
         canvas.present();
     }
