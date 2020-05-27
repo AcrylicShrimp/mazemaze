@@ -211,7 +211,7 @@ impl Handler {
 					_ => {}
 				},
 				None => {
-					socket.receive(4);
+					socket.receive(8);
 					self.context = Some(Context::PlayerIdReceive);
 				}
 			},
