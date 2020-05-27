@@ -79,29 +79,42 @@ impl Handler {
 									.unwrap();
 
 								*player = Some(player_count);
-								socket.receive(player_count as usize * 16);
+								socket.receive(player_count as usize * 24);
 							} else {
-								let mut player_positions = vec![];
+								let mut players = vec![];
 
 								for index in 0..player.unwrap() as usize {
-									player_positions.push((
-										std::io::Cursor::new(&received[index * 16..index * 16 + 8])
-											.read_u64::<byteorder::LittleEndian>()
-											.unwrap(),
-										(
-											std::io::Cursor::new(
-												&received[index * 16 + 8..index * 16 + 12],
-											)
+									let offset = index * 16;
+
+									let id = std::io::Cursor::new(&received[offset..offset + 8])
+										.read_u64::<byteorder::LittleEndian>()
+										.unwrap();
+									let glyph = std::str::from_utf8(
+										&received[offset + 8
+											..offset + 8 + received[offset + 12] as usize],
+									)
+									.unwrap()
+									.chars()
+									.next()
+									.unwrap();
+									let color = (
+										received[offset + 13],
+										received[offset + 14],
+										received[offset + 15],
+									);
+									let x =
+										std::io::Cursor::new(&received[offset + 16..offset + 20])
 											.read_u32::<byteorder::LittleEndian>()
-											.unwrap(),
-											std::io::Cursor::new(
-												&received[index * 16 + 12..(index + 1) * 16],
-											)
+											.unwrap();
+									let y =
+										std::io::Cursor::new(&received[offset + 20..offset + 24])
 											.read_u32::<byteorder::LittleEndian>()
-											.unwrap(),
-										),
-									));
+											.unwrap();
+
+									players.push((id, glyph, color, x, y));
 								}
+
+								println!("{:?}", players);
 
 								world.init_map(super::super::world::map::Map::from_data(
 									*width,
