@@ -9,6 +9,8 @@ pub enum Context {
 		data: Option<Vec<u8>>,
 		player: Option<u32>,
 	},
+	PlayerReceive,
+	PlayerIdReceive,
 }
 
 pub struct Handler {
@@ -84,7 +86,7 @@ impl Handler {
 								let mut players = vec![];
 
 								for index in 0..player.unwrap() as usize {
-									let offset = index * 16;
+									let offset = index * 24;
 
 									let id = std::io::Cursor::new(&received[offset..offset + 8])
 										.read_u64::<byteorder::LittleEndian>()
@@ -114,7 +116,7 @@ impl Handler {
 									players.push((id, glyph, color, x, y));
 								}
 
-								println!("{:?}", players);
+								println!("players: {:?}", players);
 
 								world.init_map(super::super::world::map::Map::from_data(
 									*width,
@@ -122,6 +124,7 @@ impl Handler {
 									data.take().unwrap(),
 								));
 
+								socket.receive(2);
 								self.status = None;
 								self.context = None;
 							}
@@ -153,8 +156,65 @@ impl Handler {
 					}
 				},
 			},
-			2 => {}
-			3 => {}
+			2 => match self.context.as_mut() {
+				Some(context) => match context {
+					Context::PlayerReceive => match socket.retrieve() {
+						Some(received) => {
+							let id = std::io::Cursor::new(&received[0..8])
+								.read_u64::<byteorder::LittleEndian>()
+								.unwrap();
+							let glyph =
+								std::str::from_utf8(&received[8..8 + received[12] as usize])
+									.unwrap()
+									.chars()
+									.next()
+									.unwrap();
+							let color = (received[13], received[14], received[15]);
+							let x = std::io::Cursor::new(&received[16..20])
+								.read_u32::<byteorder::LittleEndian>()
+								.unwrap();
+							let y = std::io::Cursor::new(&received[20..24])
+								.read_u32::<byteorder::LittleEndian>()
+								.unwrap();
+
+							println!("new player income: {:?}", (id, glyph, color, x, y));
+
+							socket.receive(2);
+							self.status = None;
+							self.context = None;
+						}
+						None => {}
+					},
+					_ => unreachable!(),
+				},
+				None => {
+					socket.receive(24);
+					self.context = Some(Context::PlayerReceive);
+				}
+			},
+			3 => match self.context.as_mut() {
+				Some(context) => match context {
+					Context::PlayerIdReceive => match socket.retrieve() {
+						Some(received) => {
+							let id = std::io::Cursor::new(&received)
+								.read_u64::<byteorder::LittleEndian>()
+								.unwrap();
+
+							println!("player exit: {:?}", id);
+
+							socket.receive(2);
+							self.status = None;
+							self.context = None;
+						}
+						None => {}
+					},
+					_ => {}
+				},
+				None => {
+					socket.receive(4);
+					self.context = Some(Context::PlayerIdReceive);
+				}
+			},
 			_ => {
 				socket.receive(2);
 				self.status = None;
