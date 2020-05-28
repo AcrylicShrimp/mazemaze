@@ -68,11 +68,13 @@ fn main() {
     'main_loop: loop {
         let now = std::time::Instant::now();
 
-        if !socket.update() {
-            panic!("unable to update socket");
-        }
+        for _ in 0..100 {
+            if !socket.update() {
+                panic!("unable to update socket");
+            }
 
-        handler.handle_socket(&mut socket, &mut world);
+            handler.handle_socket(&mut socket, &mut world);
+        }
 
         for event in event_pump.poll_iter() {
             match event {
