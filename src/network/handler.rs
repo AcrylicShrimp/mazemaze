@@ -61,8 +61,6 @@ impl Handler {
 		socket: &mut super::socket::Socket,
 		world: &mut super::super::world::world::World,
 	) {
-		println!("status={}", status);
-
 		match status {
 			1 => match self.context.as_mut() {
 				Some(context) => match context {
@@ -255,8 +253,6 @@ impl Handler {
 									_ => {}
 								}
 							}
-
-							println!("player move: {:?} - {}", id, received[8]);
 
 							socket.receive(2);
 							self.status = None;
