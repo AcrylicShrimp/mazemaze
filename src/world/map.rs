@@ -29,6 +29,10 @@ impl Map {
         self.height
     }
 
+    pub fn data(&self) -> &Vec<u8> {
+        &self.data
+    }
+
     pub fn get_block(&self, x: u32, y: u32) -> u8 {
         self.data[(x + y * self.width) as usize]
     }
