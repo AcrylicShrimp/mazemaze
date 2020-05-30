@@ -4,6 +4,7 @@ use super::super::controller::controller::Controller;
 use super::super::controller::player_controller::PlayerController;
 use super::super::input::input::Input;
 use super::super::network::socket::Socket;
+use super::super::object::object::Object;
 use super::super::object::player::Player;
 use super::map::Map;
 
@@ -18,7 +19,7 @@ impl World {
         World {
             map: None,
             players: Vec::new(),
-            player_controller: PlayerController::new(0.25f32),
+            player_controller: PlayerController::new(0.01f32),
         }
     }
 
@@ -43,41 +44,34 @@ impl World {
     }
 
     pub fn update(&mut self, now: std::time::Instant, input: &Input, socket: &mut Socket) {
-        // match &self.map {
-        //     Some(map) => {
-        //         self.player_controller.update(
-        //             now,
-        //             input,
-        //             map,
-        //             self.players.first_mut().unwrap().object_mut(),
-        //             socket,
-        //         );
-        //     }
-        //     None => {}
-        // }
+        match &self.map {
+            Some(map) => {
+                self.player_controller.update(
+                    now,
+                    input,
+                    map,
+                    self.players.first_mut().unwrap().object_mut(),
+                    socket,
+                );
+            }
+            None => {}
+        }
     }
 
     pub fn add_player(&mut self, id: u64, glyph: char, color: (u8, u8, u8), x: i32, y: i32) {
-        // self.players.push(Player::new(
-        //     id,
-        //     Object::new(
-        //         x,
-        //         y,
-        //         glyph,
-        //         sdl2::pixels::Color::from(color),
-        //         self.font,
-        //         self.texture_creator,
-        //     ),
-        // ));
+        self.players.push(Player::new(
+            id,
+            Object::new(x, y, glyph, sdl2::pixels::Color::from(color)),
+        ));
     }
 
     pub fn remove_player(&mut self, id: u64) {
-        // self.players.remove(
-        //     self.players
-        //         .iter()
-        //         .position(|player| player.id() == id)
-        //         .unwrap(),
-        // );
+        self.players.remove(
+            self.players
+                .iter()
+                .position(|player| player.id() == id)
+                .unwrap(),
+        );
     }
 
     pub fn init_map(&mut self, map: Map) {
