@@ -80,41 +80,33 @@ impl Handler {
 									.unwrap();
 
 								*player = Some(player_count);
-								socket.receive(player_count as usize * 24);
+								socket.receive(player_count as usize * 19);
 							} else {
 								let mut players = vec![];
 
 								for index in 0..player.unwrap() as usize {
-									let offset = index * 24;
+									let offset = index * 19;
 
 									let id = std::io::Cursor::new(&received[offset..offset + 8])
 										.read_u64::<byteorder::LittleEndian>()
 										.unwrap();
-									let glyph = std::str::from_utf8(
-										&received[offset + 8
-											..offset + 8 + received[offset + 12] as usize],
-									)
-									.unwrap()
-									.chars()
-									.next()
-									.unwrap();
 									let color = (
-										received[offset + 13],
-										received[offset + 14],
-										received[offset + 15],
+										received[offset + 8],
+										received[offset + 9],
+										received[offset + 10],
 									);
 									let x =
-										std::io::Cursor::new(&received[offset + 16..offset + 20])
+										std::io::Cursor::new(&received[offset + 11..offset + 15])
 											.read_i32::<byteorder::LittleEndian>()
 											.unwrap();
 									let y =
-										std::io::Cursor::new(&received[offset + 20..offset + 24])
+										std::io::Cursor::new(&received[offset + 15..offset + 19])
 											.read_i32::<byteorder::LittleEndian>()
 											.unwrap();
 
-									world.add_player(id, glyph, color, x, y);
+									world.add_player(id, color, x, y);
 
-									players.push((id, glyph, color, x, y));
+									players.push((id, color, x, y));
 								}
 
 								world
@@ -168,23 +160,17 @@ impl Handler {
 							let id = std::io::Cursor::new(&received[0..8])
 								.read_u64::<byteorder::LittleEndian>()
 								.unwrap();
-							let glyph =
-								std::str::from_utf8(&received[8..8 + received[12] as usize])
-									.unwrap()
-									.chars()
-									.next()
-									.unwrap();
-							let color = (received[13], received[14], received[15]);
-							let x = std::io::Cursor::new(&received[16..20])
+							let color = (received[8], received[9], received[10]);
+							let x = std::io::Cursor::new(&received[11..15])
 								.read_i32::<byteorder::LittleEndian>()
 								.unwrap();
-							let y = std::io::Cursor::new(&received[20..24])
+							let y = std::io::Cursor::new(&received[15..19])
 								.read_i32::<byteorder::LittleEndian>()
 								.unwrap();
 
-							world.add_player(id, glyph, color, x, y);
+							world.add_player(id, color, x, y);
 
-							println!("new player income: {:?}", (id, glyph, color, x, y));
+							println!("new player income: {:?}", (id, color, x, y));
 
 							socket.receive(2);
 							self.status = None;
@@ -195,7 +181,7 @@ impl Handler {
 					_ => unreachable!(),
 				},
 				None => {
-					socket.receive(24);
+					socket.receive(19);
 					self.context = Some(Context::PlayerReceive);
 				}
 			},

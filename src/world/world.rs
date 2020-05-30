@@ -58,10 +58,10 @@ impl World {
         }
     }
 
-    pub fn add_player(&mut self, id: u64, glyph: char, color: (u8, u8, u8), x: i32, y: i32) {
+    pub fn add_player(&mut self, id: u64, color: (u8, u8, u8), x: i32, y: i32) {
         self.players.push(Player::new(
             id,
-            Object::new(x, y, glyph, sdl2::pixels::Color::from(color)),
+            Object::new(x, y, '@', sdl2::pixels::Color::from(color)),
         ));
     }
 
