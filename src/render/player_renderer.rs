@@ -1,6 +1,6 @@
 extern crate sdl2;
 
-use super::super::object::player::Player;
+use super::super::world::player;
 use super::renderer;
 use sdl2::rect;
 use sdl2::render;
@@ -19,7 +19,7 @@ impl PlayerRenderer {
 
     pub fn render(
         &self,
-        players: &Vec<Player>,
+        players: &Vec<player::Player>,
         canvas: &mut render::Canvas<video::Window>,
     ) -> Result<(), String> {
         for player in players.iter() {
@@ -27,8 +27,8 @@ impl PlayerRenderer {
                 &self.texture.0,
                 None,
                 rect::Rect::new(
-                    player.object().x * (self.texture.1 as i32 + 4),
-                    player.object().y * self.texture.2 as i32,
+                    player.x * (self.texture.1 as i32 + 4),
+                    player.y * self.texture.2 as i32,
                     self.texture.1,
                     self.texture.2,
                 ),
