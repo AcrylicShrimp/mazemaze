@@ -1,16 +1,14 @@
 extern crate sdl2;
 
-use super::super::controller::controller::Controller;
 use super::super::controller::player_controller::PlayerController;
 use super::super::input::input::Input;
 use super::super::network::socket::Socket;
-use super::super::object::object::Object;
-use super::super::object::player::Player;
 use super::map::Map;
+use super::player;
 
 pub struct World {
     map: Option<Map>,
-    players: Vec<Player>,
+    players: Vec<player::Player>,
     player_controller: PlayerController,
 }
 
@@ -27,11 +25,11 @@ impl World {
         &self.map
     }
 
-    pub fn players(&self) -> &Vec<Player> {
+    pub fn players(&self) -> &Vec<player::Player> {
         &self.players
     }
 
-    pub fn players_mut(&mut self) -> &mut Vec<Player> {
+    pub fn players_mut(&mut self) -> &mut Vec<player::Player> {
         &mut self.players
     }
 
@@ -50,7 +48,7 @@ impl World {
                     now,
                     input,
                     map,
-                    self.players.first_mut().unwrap().object_mut(),
+                    self.players.first_mut().unwrap(),
                     socket,
                 );
             }
@@ -59,9 +57,11 @@ impl World {
     }
 
     pub fn add_player(&mut self, id: u64, color: (u8, u8, u8), x: i32, y: i32) {
-        self.players.push(Player::new(
+        self.players.push(player::Player::new(
             id,
-            Object::new(x, y, '@', sdl2::pixels::Color::from(color)),
+            x,
+            y,
+            sdl2::pixels::Color::from(color),
         ));
     }
 
