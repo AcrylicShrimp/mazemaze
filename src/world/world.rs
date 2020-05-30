@@ -3,11 +3,14 @@ extern crate sdl2;
 use super::super::controller::player_controller::PlayerController;
 use super::super::input::input::Input;
 use super::super::network::socket::Socket;
+use super::dropped_item;
+use super::item;
 use super::map::Map;
 use super::player;
 
 pub struct World {
     map: Option<Map>,
+    items: Vec<dropped_item::DroppedItem>,
     players: Vec<player::Player>,
     player_controller: PlayerController,
 }
@@ -16,13 +19,26 @@ impl World {
     pub fn new() -> World {
         World {
             map: None,
+            items: vec![dropped_item::DroppedItem::new(
+                1,
+                1,
+                item::Item::new(
+                    item::ItemType::Equipment,
+                    "test!".to_owned(),
+                    "This is a test item.".to_owned(),
+                ),
+            )],
             players: Vec::new(),
-            player_controller: PlayerController::new(0.01f32),
+            player_controller: PlayerController::new(0.25f32),
         }
     }
 
     pub fn map(&self) -> &Option<Map> {
         &self.map
+    }
+
+    pub fn items(&self) -> &Vec<dropped_item::DroppedItem> {
+        &self.items
     }
 
     pub fn players(&self) -> &Vec<player::Player> {
