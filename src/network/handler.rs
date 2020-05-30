@@ -225,16 +225,16 @@ impl Handler {
 
 								match received[8] {
 									0 => {
-										player.object_mut().y -= 1;
+										player.y -= 1;
 									}
 									1 => {
-										player.object_mut().y += 1;
+										player.y += 1;
 									}
 									2 => {
-										player.object_mut().x -= 1;
+										player.x -= 1;
 									}
 									3 => {
-										player.object_mut().x += 1;
+										player.x += 1;
 									}
 									_ => {}
 								}
