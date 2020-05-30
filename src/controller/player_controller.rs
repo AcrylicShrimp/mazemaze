@@ -38,7 +38,7 @@ impl Controller for PlayerController {
         socket: &mut Socket,
     ) {
         match self.player_id {
-            Some(player_id) => {
+            Some(..) => {
                 if self.last_move.is_none() {
                     self.last_move = Some(now);
                     return;
