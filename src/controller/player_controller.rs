@@ -28,7 +28,7 @@ impl PlayerController {
 }
 
 impl PlayerController {
-    fn update(
+    pub fn update(
         &mut self,
         now: std::time::Instant,
         input: &Input,
