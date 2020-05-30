@@ -2,9 +2,8 @@ extern crate sdl2;
 
 use super::super::input::input::Input;
 use super::super::network::socket::Socket;
-use super::super::object::object::Object;
 use super::super::world::map::Map;
-use super::controller::Controller;
+use super::super::world::player::Player;
 
 use byteorder::WriteBytesExt;
 
@@ -28,13 +27,13 @@ impl PlayerController {
     }
 }
 
-impl Controller for PlayerController {
+impl PlayerController {
     fn update(
         &mut self,
         now: std::time::Instant,
         input: &Input,
         map: &Map,
-        object: &mut Object,
+        player: &mut Player,
         socket: &mut Socket,
     ) {
         match self.player_id {
@@ -54,13 +53,13 @@ impl Controller for PlayerController {
 
                 if input.up() != input.down() {
                     if input.up() {
-                        if map.get_block(object.x as u32, object.y as u32 - 1) == 0 {
+                        if map.get_block(player.x as u32, player.y as u32 - 1) == 0 {
                             packet.push(0);
                             socket.send(packet);
                             self.last_move = Some(now);
                         }
                     } else {
-                        if map.get_block(object.x as u32, object.y as u32 + 1) == 0 {
+                        if map.get_block(player.x as u32, player.y as u32 + 1) == 0 {
                             packet.push(1);
                             socket.send(packet);
                             self.last_move = Some(now);
@@ -74,13 +73,13 @@ impl Controller for PlayerController {
 
                 if input.left() != input.right() {
                     if input.left() {
-                        if map.get_block(object.x as u32 - 1, object.y as u32) == 0 {
+                        if map.get_block(player.x as u32 - 1, player.y as u32) == 0 {
                             packet.push(2);
                             socket.send(packet);
                             self.last_move = Some(now);
                         }
                     } else {
-                        if map.get_block(object.x as u32 + 1, object.y as u32) == 0 {
+                        if map.get_block(player.x as u32 + 1, player.y as u32) == 0 {
                             packet.push(3);
                             socket.send(packet);
                             self.last_move = Some(now);
