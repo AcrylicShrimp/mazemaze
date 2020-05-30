@@ -18,11 +18,15 @@ impl PlayerRenderer {
     }
 
     pub fn render(
-        &self,
+        &mut self,
         players: &Vec<player::Player>,
         canvas: &mut render::Canvas<video::Window>,
     ) -> Result<(), String> {
         for player in players.iter() {
+            self.texture
+                .0
+                .set_color_mod(player.color().r, player.color().g, player.color().b);
+
             canvas.copy(
                 &self.texture.0,
                 None,

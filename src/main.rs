@@ -29,7 +29,7 @@ fn main() -> Result<(), String> {
 
     let mut input = input::input::Input::new();
     let mut world = world::world::World::new();
-    let world_renderer = render::world_renderer::WorldRenderer::new(
+    let mut world_renderer = render::world_renderer::WorldRenderer::new(
         &window.create_renderer("assets/fonts/Inconsolata.ttf", 18)?,
     )?;
 

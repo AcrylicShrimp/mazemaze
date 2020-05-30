@@ -21,7 +21,7 @@ impl WorldRenderer {
 	}
 
 	pub fn render(
-		&self,
+		&mut self,
 		world: &world::World,
 		canvas: &mut render::Canvas<video::Window>,
 	) -> Result<(), String> {
