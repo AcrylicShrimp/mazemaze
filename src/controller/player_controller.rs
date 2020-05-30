@@ -53,17 +53,13 @@ impl PlayerController {
 
                 if input.up() != input.down() {
                     if input.up() {
-                        if map.get_block(player.x as u32, player.y as u32 - 1) == 0 {
-                            packet.push(0);
-                            socket.send(packet);
-                            self.last_move = Some(now);
-                        }
+                        packet.push(0);
+                        socket.send(packet);
+                        self.last_move = Some(now);
                     } else {
-                        if map.get_block(player.x as u32, player.y as u32 + 1) == 0 {
-                            packet.push(1);
-                            socket.send(packet);
-                            self.last_move = Some(now);
-                        }
+                        packet.push(1);
+                        socket.send(packet);
+                        self.last_move = Some(now);
                     }
                 }
 
@@ -73,17 +69,13 @@ impl PlayerController {
 
                 if input.left() != input.right() {
                     if input.left() {
-                        if map.get_block(player.x as u32 - 1, player.y as u32) == 0 {
-                            packet.push(2);
-                            socket.send(packet);
-                            self.last_move = Some(now);
-                        }
+                        packet.push(2);
+                        socket.send(packet);
+                        self.last_move = Some(now);
                     } else {
-                        if map.get_block(player.x as u32 + 1, player.y as u32) == 0 {
-                            packet.push(3);
-                            socket.send(packet);
-                            self.last_move = Some(now);
-                        }
+                        packet.push(3);
+                        socket.send(packet);
+                        self.last_move = Some(now);
                     }
                 }
             }
