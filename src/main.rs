@@ -4,7 +4,6 @@ extern crate sdl2;
 mod controller;
 mod input;
 mod network;
-mod object;
 mod render;
 mod world;
 
