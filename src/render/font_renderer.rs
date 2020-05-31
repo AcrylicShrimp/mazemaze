@@ -59,4 +59,48 @@ impl<'renderer> FontRenderer<'renderer> {
 
         Ok((texture, surface.width(), surface.height()))
     }
+
+    pub fn generate_text_texture(
+        &mut self,
+        text: &str,
+        max_width: u32,
+        style: ttf::FontStyle,
+    ) -> Result<(render::Texture, u32, u32), String> {
+        self.generate_text_texture_with_color(text, max_width, style, pixels::Color::WHITE)
+    }
+
+    pub fn generate_text_texture_with_color(
+        &mut self,
+        text: &str,
+        max_width: u32,
+        style: ttf::FontStyle,
+        color: pixels::Color,
+    ) -> Result<(render::Texture, u32, u32), String> {
+        self.font.set_style(style);
+
+        let surface = self
+            .font
+            .render(text)
+            .blended_wrapped(color, max_width)
+            .map_err(|err| match err {
+                ttf::FontError::InvalidLatin1Text(..) => {
+                    "this font does not contain that glyph".to_owned()
+                }
+                ttf::FontError::SdlError(err) => err,
+            })?;
+
+        let texture = self
+            .texture_creator
+            .create_texture_from_surface(&surface)
+            .map_err(|err| match err {
+                render::TextureValueError::WidthOverflows(..) => "width overflows".to_owned(),
+                render::TextureValueError::HeightOverflows(..) => "height overflows".to_owned(),
+                render::TextureValueError::WidthMustBeMultipleOfTwoForFormat(..) => {
+                    "width must be multiple of 2".to_owned()
+                }
+                render::TextureValueError::SdlError(err) => err,
+            })?;
+
+        Ok((texture, surface.width(), surface.height()))
+    }
 }
