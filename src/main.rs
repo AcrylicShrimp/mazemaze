@@ -32,7 +32,7 @@ fn main() -> Result<(), String> {
     let mut input = input::input::Input::new();
     let mut world = world::world::World::new();
     let mut world_renderer = render::world_renderer::WorldRenderer::new(&font_renderer)?;
-    // let mut ui_renderer = render::ui_renderer::UIRenderer::new()
+    let mut ui_renderer = render::ui_renderer::UIRenderer::new(&font_renderer)?;
 
     let mut canvas = window.canvas_mut();
     let mut event_pump = context.create_event_pump()?;
@@ -61,12 +61,27 @@ fn main() -> Result<(), String> {
             }
         }
 
+        ui_renderer.mode = if input.inventory() {
+            render::ui_renderer::UIRendererMode::Inventory
+        } else {
+            render::ui_renderer::UIRendererMode::InGame
+        };
+
+        ui_renderer.update(&input);
         world.update(now, &input, &mut socket);
 
         canvas.clear();
 
         // TODO: Render something here.
-        world_renderer.render(&world, &mut canvas)?;
+        match ui_renderer.mode {
+            render::ui_renderer::UIRendererMode::InGame => {
+                world_renderer.render(&world, &mut canvas)?;
+                ui_renderer.render(&world, &mut canvas, &mut font_renderer)?;
+            }
+            render::ui_renderer::UIRendererMode::Inventory => {
+                ui_renderer.render(&world, &mut canvas, &mut font_renderer)?;
+            }
+        }
 
         canvas.present();
     }
