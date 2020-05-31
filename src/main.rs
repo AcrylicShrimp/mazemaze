@@ -11,7 +11,7 @@ use byteorder::WriteBytesExt;
 
 fn main() -> Result<(), String> {
     let context = render::context::Context::init()?;
-    let mut window = context.create_window("Maze Maze", 802, 600)?;
+    let mut window = context.create_window("Maze Maze", 800, 600)?;
     let renderer = window.create_renderer()?;
     let font_renderer = renderer.create_font_renderer("assets/fonts/Inconsolata.ttf", 18)?;
 
