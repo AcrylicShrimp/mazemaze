@@ -5,6 +5,7 @@ pub struct Input {
     down: bool,
     left: bool,
     right: bool,
+    inventory: bool,
 }
 
 impl Input {
@@ -14,6 +15,7 @@ impl Input {
             down: false,
             left: false,
             right: false,
+            inventory: false,
         }
     }
 
@@ -31,6 +33,10 @@ impl Input {
 
     pub fn right(&self) -> bool {
         self.right
+    }
+
+    pub fn inventory(&self) -> bool {
+        self.inventory
     }
 
     pub fn handle_event(&mut self, event: &sdl2::event::Event) {
@@ -66,6 +72,9 @@ impl Input {
                     }
                     sdl2::keyboard::Keycode::Right => {
                         self.right = false;
+                    }
+                    sdl2::keyboard::Keycode::I => {
+                        self.inventory = !self.inventory;
                     }
                     _ => {}
                 },
