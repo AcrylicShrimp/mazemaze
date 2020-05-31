@@ -6,32 +6,29 @@ use sdl2::ttf;
 use sdl2::video;
 
 pub struct Renderer<'ttf> {
-	multiplier: u16,
 	texture_creator: render::TextureCreator<video::WindowContext>,
 	font: ttf::Font<'ttf, 'static>,
 }
 
 impl<'ttf> Renderer<'ttf> {
 	pub fn from(
-		multiplier: u16,
 		texture_creator: render::TextureCreator<video::WindowContext>,
 		ttf_context: &'ttf ttf::Sdl2TtfContext,
 		font_path: &str,
 		font_size: u16,
 	) -> Result<Renderer<'ttf>, String> {
-		let mut font = ttf_context.load_font(font_path, font_size * multiplier)?;
+		let mut font = ttf_context.load_font(font_path, font_size)?;
 
 		font.set_hinting(sdl2::ttf::Hinting::Light);
 
 		Ok(Renderer {
-			multiplier,
 			texture_creator,
 			font,
 		})
 	}
 
 	pub fn line_height(&self) -> i32 {
-		self.font.height() / self.multiplier as i32
+		self.font.height()
 	}
 
 	pub fn generate_texture(&self, glyph: char) -> Result<(render::Texture, u32, u32), String> {
@@ -65,10 +62,6 @@ impl<'ttf> Renderer<'ttf> {
 				render::TextureValueError::SdlError(err) => err,
 			})?;
 
-		Ok((
-			texture,
-			surface.width() / self.multiplier as u32,
-			surface.height() / self.multiplier as u32,
-		))
+		Ok((texture, surface.width(), surface.height()))
 	}
 }

@@ -35,7 +35,6 @@ impl Window {
 		font_size: u16,
 	) -> Result<renderer::Renderer<'ttf>, String> {
 		renderer::Renderer::from(
-			1,
 			self.canvas.texture_creator(),
 			&self.ttf_context,
 			font_path,
