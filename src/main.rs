@@ -13,7 +13,7 @@ fn main() -> Result<(), String> {
     let context = render::context::Context::init()?;
     let mut window = context.create_window("Maze Maze", 800, 600)?;
     let renderer = window.create_renderer()?;
-    let font_renderer = renderer.create_font_renderer("assets/fonts/Inconsolata.ttf", 18)?;
+    let mut font_renderer = renderer.create_font_renderer("assets/fonts/Inconsolata.ttf", 16)?;
 
     let stream = std::net::TcpStream::connect("127.0.0.1:19980").unwrap();
     stream.set_nodelay(true).unwrap();
