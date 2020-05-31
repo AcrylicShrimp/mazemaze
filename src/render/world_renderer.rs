@@ -1,10 +1,10 @@
 extern crate sdl2;
 
 use super::super::world::world;
+use super::font_renderer;
 use super::item_renderer;
 use super::map_renderer;
 use super::player_renderer;
-use super::renderer;
 use sdl2::render;
 use sdl2::video;
 
@@ -15,7 +15,7 @@ pub struct WorldRenderer {
 }
 
 impl WorldRenderer {
-	pub fn new(renderer: &renderer::Renderer) -> Result<WorldRenderer, String> {
+	pub fn new(renderer: &font_renderer::FontRenderer) -> Result<WorldRenderer, String> {
 		Ok(WorldRenderer {
 			map_renderer: map_renderer::MapRenderer::new(renderer)?,
 			player_renderer: player_renderer::PlayerRenderer::new(renderer)?,

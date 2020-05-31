@@ -1,6 +1,6 @@
 extern crate sdl2;
 
-use super::renderer;
+use super::font_renderer;
 use sdl2::pixels;
 use sdl2::rect;
 use sdl2::render;
@@ -12,7 +12,7 @@ pub struct MapRenderer {
 }
 
 impl MapRenderer {
-	pub fn new(renderer: &renderer::Renderer) -> Result<MapRenderer, String> {
+	pub fn new(renderer: &font_renderer::FontRenderer) -> Result<MapRenderer, String> {
 		let mut blocks = std::collections::HashMap::new();
 
 		blocks.insert(0, renderer.generate_texture(' ')?);

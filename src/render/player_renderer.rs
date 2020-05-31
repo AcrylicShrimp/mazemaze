@@ -1,7 +1,7 @@
 extern crate sdl2;
 
 use super::super::world::player;
-use super::renderer;
+use super::font_renderer;
 use sdl2::rect;
 use sdl2::render;
 use sdl2::video;
@@ -11,7 +11,7 @@ pub struct PlayerRenderer {
 }
 
 impl PlayerRenderer {
-    pub fn new(renderer: &renderer::Renderer) -> Result<PlayerRenderer, String> {
+    pub fn new(renderer: &font_renderer::FontRenderer) -> Result<PlayerRenderer, String> {
         Ok(PlayerRenderer {
             texture: renderer.generate_texture('@')?,
         })

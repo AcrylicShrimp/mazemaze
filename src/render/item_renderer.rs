@@ -2,7 +2,7 @@ extern crate sdl2;
 
 use super::super::world::dropped_item;
 use super::super::world::item;
-use super::renderer;
+use super::font_renderer;
 use sdl2::rect;
 use sdl2::render;
 use sdl2::video;
@@ -15,7 +15,7 @@ pub struct ItemRenderer {
 }
 
 impl ItemRenderer {
-    pub fn new(renderer: &renderer::Renderer) -> Result<ItemRenderer, String> {
+    pub fn new(renderer: &font_renderer::FontRenderer) -> Result<ItemRenderer, String> {
         Ok(ItemRenderer {
             equipment_texture: renderer.generate_texture('e')?,
             consumable_texture: renderer.generate_texture('c')?,

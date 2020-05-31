@@ -7,7 +7,6 @@ use sdl2::video;
 
 pub struct Window {
 	canvas: render::Canvas<video::Window>,
-	ttf_context: ttf::Sdl2TtfContext,
 }
 
 impl Window {
@@ -22,24 +21,17 @@ impl Window {
 					sdl2::IntegerOrSdlError::IntegerOverflows(..) => "integer overflows".to_owned(),
 					sdl2::IntegerOrSdlError::SdlError(err) => err,
 				})?,
-			ttf_context: sdl2::ttf::init().map_err(|err| match err {
-				ttf::InitError::AlreadyInitializedError => "".to_owned(),
-				ttf::InitError::InitializationError(err) => format!("{}", err),
-			})?,
 		})
 	}
 
-	pub fn create_renderer<'ttf>(
-		&'ttf self,
-		font_path: &str,
-		font_size: u16,
-	) -> Result<renderer::Renderer<'ttf>, String> {
-		renderer::Renderer::from(
+	pub fn create_renderer(&self) -> Result<renderer::Renderer, String> {
+		Ok(renderer::Renderer::from(
+			sdl2::ttf::init().map_err(|err| match err {
+				ttf::InitError::AlreadyInitializedError => "".to_owned(),
+				ttf::InitError::InitializationError(err) => format!("{}", err),
+			})?,
 			self.canvas.texture_creator(),
-			&self.ttf_context,
-			font_path,
-			font_size,
-		)
+		))
 	}
 
 	pub fn canvas(&self) -> &render::Canvas<video::Window> {

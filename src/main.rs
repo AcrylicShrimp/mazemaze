@@ -12,6 +12,8 @@ use byteorder::WriteBytesExt;
 fn main() -> Result<(), String> {
     let context = render::context::Context::init()?;
     let mut window = context.create_window("Maze Maze", 802, 600)?;
+    let renderer = window.create_renderer()?;
+    let font_renderer = renderer.create_font_renderer("assets/fonts/Inconsolata.ttf", 18)?;
 
     let stream = std::net::TcpStream::connect("127.0.0.1:19980").unwrap();
     stream.set_nodelay(true).unwrap();
@@ -29,9 +31,8 @@ fn main() -> Result<(), String> {
 
     let mut input = input::input::Input::new();
     let mut world = world::world::World::new();
-    let mut world_renderer = render::world_renderer::WorldRenderer::new(
-        &window.create_renderer("assets/fonts/Inconsolata.ttf", 18)?,
-    )?;
+    let mut world_renderer = render::world_renderer::WorldRenderer::new(&font_renderer)?;
+    // let mut ui_renderer = render::ui_renderer::UIRenderer::new()
 
     let mut canvas = window.canvas_mut();
     let mut event_pump = context.create_event_pump()?;
